@@ -27,9 +27,12 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextView;
+    private TextView mTextViewPostResponse;
     private EditText mEditTextNombre;
     private EditText mEditTextApellido;
     private Button mButtonPost;
+    private Button mButtonGet;
+
 
     private RequestQueue mRequestQueue;
 
@@ -39,11 +42,40 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mTextView = (TextView) findViewById(R.id.main_activity_text);
+        mTextViewPostResponse = (TextView) findViewById(R.id.main_activity_text_post_response);
         mEditTextNombre = (EditText) findViewById(R.id.main_activity_txtNombre);
         mEditTextApellido = (EditText) findViewById(R.id.main_activity_txtApellido);
         mButtonPost = (Button) findViewById(R.id.main_activity_button_post);
+        mButtonGet = (Button) findViewById(R.id.main_activity_button_get);
 
-// Instantiate the RequestQueue.
+
+        mButtonGet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendGet();
+            }
+        });
+
+        mButtonPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendPost();
+            }
+        });
+
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mRequestQueue != null) {
+            mRequestQueue.cancelAll(true);
+        }
+    }
+
+    void sendGet() {
+        // Instantiate the RequestQueue.
         mRequestQueue = Volley.newRequestQueue(this);
         String url = "http://172.18.116.71:8082/";
 
@@ -64,46 +96,31 @@ public class MainActivity extends AppCompatActivity {
 // Add the request to the RequestQueue.
         mRequestQueue.add(stringRequest);
 
-        mButtonPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendPost();
-            }
-        });
-
 
     }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mRequestQueue != null) {
-            mRequestQueue.cancelAll(true);
-        }
-    }
-
 
     void sendPost() {
 
-        String url = "http://172.18.116.71:8082/user";
+        String url = "http://172.18.116.71:8082/estudiantes";
 
-        StringRequest sr = new StringRequest(Request.Method.POST, url,
+        StringRequest StringReq = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                        mTextViewPostResponse.setText("Response is: " + response.toString());
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                        mTextViewPostResponse.setText(error.toString());
                     }
                 }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("username", mEditTextNombre.getText().toString());
+                params.put("nombre", mEditTextNombre.getText().toString());
+                params.put("apellido", mEditTextApellido.getText().toString());
                 return params;
             }
 
@@ -115,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        mRequestQueue.add(sr);
+        mRequestQueue.add(StringReq);
 
     }
 
