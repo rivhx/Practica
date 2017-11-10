@@ -55,6 +55,18 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/main_activity_button_get_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="enviar get image" />
+
+        <ImageView
+            android:id="@+id/main_activity_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_launcher_background" />
+
     </android.support.v7.widget.LinearLayoutCompat>
 
 
